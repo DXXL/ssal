@@ -1,6 +1,6 @@
 
 # global method
-window.sswal = (params) =>
+window.ssal = (params) =>
 
     # get parameters for sweetalert function
     # and specified buttons from parameters
