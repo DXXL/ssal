@@ -5,7 +5,7 @@
 
 # Installation
 
-Copy the ssal.min.js into your project and link it right after your link to Sweetalert 2, found (here)[https://github.com/limonte/sweetalert2].
+Copy the ssal.min.js into your project and link it right after your link to Sweetalert 2, found at https://github.com/limonte/sweetalert2.
 
 # Usage
 
@@ -73,3 +73,7 @@ ssal
         }
     ]
 ```
+
+# License
+
+Licensed under the Mozilla Public License 2.0 found in LICENSE file
