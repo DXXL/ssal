@@ -2,33 +2,54 @@
 # global method
 window.ssal = (params) ->
 
-    # remove existing handlers to prepare for current alert
-    window.handlers = {}
-    window.handlerID = null
-
-    # get parameters for sweetalert function
-    # and specified buttons from parameters
+    # get parameters for standard swal and for ssal
     swalParams = {}
     buttons = null
     for own param, value of params
         if param is 'buttons'
             buttons = value
+        else if param is 'iframe'
+
+            # create html for iframe
+            if not params.contains 'html'
+                iframe = value
+                htmlstr = '<iframe id="swal2-iframe" frameBorder="0" width="'+iframe['width']+'px" height="'+iframe['height']+'px" src="'+iframe['src']+'"></iframe>'
+                swalParams['html'] = htmlstr
+                swalParams['width'] = iframe['width'] + 150
+            else
+                # throw error if there is also html defined
+                console.warning "SwalExtend: Can't have html and iframe in Sweetalert. Html is ignored."
+                return
+
         else
             swalParams[param] = value
 
-    # print error if buttons or sweetalert parameters are not defined
-    if not swalParams? or not buttons?
-        console.error "SwalExtend: Can't create Sweetalert. Parameters wrong."
+    # print error if sweetalert parameters are not defined
+    if not swalParams?
+        console.error "SwalExtend: Can't create Sweetalert. Parameters wrong or missing."
+        return
+
+    # print error if buttons are missing
+    if not buttons?
+        console.error "SwalExtend: Can't create Sweetalert. Buttons not defined."
         return
 
     # open a sweetalert with the paramters
     swal.apply this, [swalParams]
-    window.isAlertShown = true
+
+    # create the needed buttons
+    createButtons buttons
+
+    return
+
+createButtons = (buttons) ->
+
+    # remove existing handlers to prepare for current alert
+    window.handlers = {}
+    window.handlerID = null
 
     # get the buttoncontainer, and wait until swal is displayed
-    buttoncontainer = null
-    while not buttoncontainer?
-        buttoncontainer = document.getElementsByClassName('swal2-buttonswrapper')[0]
+    buttoncontainer = document.getElementsByClassName('swal2-buttonswrapper')[0]
 
     # get default styles for cancel and confirm
     cancelStyle  = cssOfElementWithClass 'swal2-cancel'
@@ -43,8 +64,8 @@ window.ssal = (params) ->
     for b in buttons
 
         # get button values
-        label   = b['label']
-        color   = b['color']
+        label = b['label']
+        color = b['color']
 
         # get handler and store reference to it globally
         handler = b['handler']
@@ -121,6 +142,7 @@ removeOccurenciesOfElementWithClass = (elCl) ->
     if elements? and elements.length > 0
         for element in elements
             element.parentNode.removeChild element
+    return
 
 # store handlers globally
 window.handlers = {}
