@@ -6,22 +6,33 @@ window.ssal = (params) ->
     swalParams = {}
     buttons = null
     for own param, value of params
+
+        # get buttons and store them
         if param is 'buttons'
             buttons = value
+
         else if param is 'iframe'
 
             # create html for iframe
-            if not params.contains 'html'
+            if not params['html']?
+
+                # create html for the given iframe values
                 iframe = value
                 htmlstr = '<iframe id="swal2-iframe" frameBorder="0" width="'+iframe['width']+'px" height="'+iframe['height']+'px" src="'+iframe['src']+'"></iframe>'
                 swalParams['html'] = htmlstr
-                swalParams['width'] = iframe['width'] + 150
+
+                # if the alert is smaller than the iframe, set it to the iframe's size
+                width = iframe['width'] + 20
+                if swalParams['width'] < width then swalParams['width'] = width
+
             else
                 # throw error if there is also html defined
                 console.warning "SwalExtend: Can't have html and iframe in Sweetalert. Html is ignored."
                 return
 
         else
+
+            # append to default sweetalert attributes
             swalParams[param] = value
 
     # print error if sweetalert parameters are not defined
