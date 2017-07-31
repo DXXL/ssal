@@ -1,16 +1,25 @@
 # SuperSweetAlert
 
-**Adds the ability to have multiple buttons to a Sweetalert2.**
+**Features:**
+- **Multiple buttons**
+- Display iframe
+
 *More features may come in future*
 
-# Installation
+## Installation
 
 Copy the ssal.min.js into your project and link it right after your link to Sweetalert 2, found at https://github.com/limonte/sweetalert2.
 
-# Usage
+## Usage
 
 Create an alert as you would normally with Sweetalert2, but use `ssal()` instead of `swal()`.
 *Please do not use any button related property (confirmButtonColor, hasCancelButton, etc...).*
+
+#### Note
+All examples are written in JavaScript, althoug SuperSweetAlert is written in CoffeeScript. Keep in mind that "CoffeeScript's just JavaScript". I also have a example in CoffeeScript highlighting all feautures, previously explained in detail
+
+### Multiple buttons
+
 Here is how you specify the buttons to be displayed:
 
 ```
@@ -49,12 +58,45 @@ ssal({
 });
 ```
 
-Here is also a full example in Coffescript:
+### iframe
+
+SuperSweetAlert lets you embed another page within your alert. This can be useful for example to display previews. It also let's you completely decide on the elements shown in the alert. *A feature to get values from a form, defined in an iframe may come in future*
+
+Example:
+
+```
+ssal({
+    title: 'Some title',
+    iframe: {
+        width: 400,
+        height: 400,
+        src: '/form.html'
+    },
+    buttons: [
+        {
+            label: 'Some text',
+            color: '',
+            handler: function() {
+                ... do some stuff ...
+            }
+        }
+    ]
+});
+```
+
+### Full CoffeeScript example
+
+Here is also a full example in CoffeScript:
 
 ```
 ssal
     title: 'some title'
     allowOutsideClick: true
+    iframe: {
+        width: 400
+        height: 400
+        src: '/frame.html'
+    }
     buttons: [
         {
             label: 'First button'
