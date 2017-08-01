@@ -149,7 +149,9 @@ ssal
         {
             label: 'Second colored button'
             color: '#DD6B55'
-            handler: -> doStuff()
+            iframehandler: (iframe) ->
+                x = iframe.getElementById 'x'
+                alert 'x'
         }
         'section'
         {
