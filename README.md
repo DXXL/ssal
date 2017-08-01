@@ -58,7 +58,7 @@ ssal({
 });
 ```
 
-### section between buttons
+#### Section between buttons
 
 To group the buttons, enter `'section'` into the buttons array, to define a new section. The following buttons will be displayed in the next row.
 
@@ -98,7 +98,7 @@ SuperSweetAlert lets you embed another page within your alert. This can be usefu
 
 #### Get values
 
-You can not only specify a handler but also a iframehandler. The iframehandler has an attribute 'iframe' which passes the contents of the iframe, as they were when the button was pressed, as HTMLDocument. So you can get all elements of the iframe and their contents with normal JavaScript.
+You can not only specify a handler but also an iframehandler. The iframehandler has an attribute 'iframe' which passes the contents of the iframe, as they were when the button was pressed, as HTMLDocument. So you can get all elements of the iframe and their contents with normal JavaScript.
 If you define both **the handler will be called** ***after*** **the iframehandler**. Note that you can only access the iframe from within the iframehandler.
 
 Example:
