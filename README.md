@@ -1,7 +1,7 @@
 # SuperSweetAlert
 
 **Features:**
-- **Multiple buttons**
+- **Multiple buttons** groupable
 - Display iframe
 
 *More features may come in future*
@@ -58,6 +58,40 @@ ssal({
 });
 ```
 
+### section between buttons
+
+To group the buttons, enter `'section'` into the buttons array, to define a new section. The following buttons will be displayed in the next row.
+
+Example:
+
+```
+ssal({
+    someStandardSwalProperties: 'someValue',
+    buttons: [
+        {
+            label: 'Some text',
+            color: '',
+            handler: function() {
+                ... do some stuff ...
+            }
+        }
+        {
+            label: 'Some text',
+            color: '#DD6B55',
+            handler: function() {
+                ... do some stuff ...
+            }
+        },
+        'section', // the following cancel button will be displayed in the next row
+        {
+            label: 'Some text',
+            color: '',
+            handler: 'cancel'
+        }
+    ]
+});
+```
+
 ### iframe
 
 SuperSweetAlert lets you embed another page within your alert. This can be useful for example to display previews. It also let's you completely decide on the elements shown in the alert. *A feature to get values from a form, defined in an iframe may come in future*
@@ -108,6 +142,7 @@ ssal
             color: '#DD6B55'
             handler: -> doStuff()
         }
+        'section'
         {
             label: 'Cancel'
             color: ''

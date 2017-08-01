@@ -30,6 +30,10 @@ window.ssal = (params) ->
                 console.warning "SwalExtend: Can't have html and iframe in Sweetalert. Html is ignored."
                 return
 
+        else if param is 'width'
+            if not isNaN value
+                swalParams['width'] = value.toString() + 'px'
+
         else
 
             # append to default sweetalert attributes
@@ -74,67 +78,72 @@ createButtons = (buttons) ->
     i = 0
     for b in buttons
 
-        # get button values
-        label = b['label']
-        color = b['color']
-
-        # get handler and store reference to it globally
-        handler = b['handler']
-        window.handlers["#{i}"] = handler
-
-        # close by default on button click
-        close   = if b['close']? then b['close'] else true
-
-        # get the button's type: confirm or cancel
-        isConfirm = false
-        if typeof handler is 'function'
-            isConfirm = true
-        else if handler? and handler isnt 'cancel'
-            # if handler is not null and not 'cancel', it has an unallowed
-            # value. Therefore throw an error.
-            console.error "SwalExtend: Handler must either be a function, null or 'cancel'"
-            return
-
-        # create a button element
-        button = document.createElement 'button'
-
-        # set id for the handler
-        button.setAttribute 'id', "#{i}"
-
-        # set className and style depedning on the buttons function
-        if isConfirm
-            button.className = 'swal2-confirm swal2-styled'
-            button.style.cssText = confirmStlye
+        if b is 'section'
+            br = document.createElement 'br'
+            buttoncontainer.appendChild br
         else
-            button.className = 'swal2-cancel swal2-styled'
-            button.style.cssText = cancelStyle
 
-        # since the style is copied from the original button,
-        # it can occurr that the button is hidden. Therefore
-        # ignore the display style setting
-        button.style.display = ''
+            # get button values
+            label = b['label']
+            color = b['color']
 
-        # set content to given label
-        button.innerHTML = label
+            # get handler and store reference to it globally
+            handler = b['handler']
+            window.handlers["#{i}"] = handler
 
-        # set color, if it is deined
-        if color? and color isnt ''
-            button.style.backgroundColor = color
+            # close by default on button click
+            close   = if b['close']? then b['close'] else true
 
-        # append button to buttoncontainer
-        buttoncontainer.appendChild button
+            # get the button's type: confirm or cancel
+            isConfirm = false
+            if typeof handler is 'function'
+                isConfirm = true
+            else if handler? and handler isnt 'cancel'
+                # if handler is not null and not 'cancel', it has an unallowed
+                # value. Therefore throw an error.
+                console.error "SwalExtend: Handler must either be a function, null or 'cancel'"
+                return
 
-        # if button is confirm button, close the alert and
-        # perform handler, once it was done so
-        if isConfirm
-            button.addEventListener 'click', (event) ->
-                element = event.srcElement
-                window.handlerID = element.getAttribute 'id'
-                sweetAlert.close()
-        else
-            # if button is cancel, only close
-            button.addEventListener 'click', ->
-                sweetAlert.close()
+            # create a button element
+            button = document.createElement 'button'
+
+            # set id for the handler
+            button.setAttribute 'id', "#{i}"
+
+            # set className and style depedning on the buttons function
+            if isConfirm
+                button.className = 'swal2-confirm swal2-styled'
+                button.style.cssText = confirmStlye
+            else
+                button.className = 'swal2-cancel swal2-styled'
+                button.style.cssText = cancelStyle
+
+            # since the style is copied from the original button,
+            # it can occurr that the button is hidden. Therefore
+            # ignore the display style setting
+            button.style.display = ''
+
+            # set content to given label
+            button.innerHTML = label
+
+            # set color, if it is deined
+            if color? and color isnt ''
+                button.style.backgroundColor = color
+
+            # append button to buttoncontainer
+            buttoncontainer.appendChild button
+
+            # if button is confirm button, close the alert and
+            # perform handler, once it was done so
+            if isConfirm
+                button.addEventListener 'click', (event) ->
+                    element = event.srcElement
+                    window.handlerID = element.getAttribute 'id'
+                    sweetAlert.close()
+            else
+                # if button is cancel, only close
+                button.addEventListener 'click', ->
+                    sweetAlert.close()
 
         i++
 
