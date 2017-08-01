@@ -7,7 +7,7 @@ cake = {
 fs = require 'fs'
 {exec} = require 'child_process'
 
-task 'sbuild', 'Build single application file from source files', ->
+task 'build', 'Build single application file from source files', ->
     compile = (out, appFiles) ->
         appContents = new Array remaining = appFiles.length
         for file, index in appFiles then do (file, index) ->
@@ -18,13 +18,15 @@ task 'sbuild', 'Build single application file from source files', ->
     process = (out, appContents) ->
         fs.writeFileSync "#{out}.raw.coffee", appContents.join('\n\n'), 'utf8'
         exec "coffee --compile #{out}.raw.coffee", (err, stdout, stderr) ->
-            throw err if err
-            console.log stdout + stderr
+            if err
+                throw err
+                console.log stdout + stderr
             fs.unlink "#{out}.raw.coffee", (err) ->
                 throw err if err
             exec "uglifyjs -o #{out}.min.js #{out}.raw.js", (err, stdout, stderr) ->
-                throw err if err
-                console.log stdout + stderr
+                if err
+                    throw err
+                    console.log stdout + stderr
                 fs.unlink "#{out}.raw.js", (err) ->
                     throw err if err
                     console.log "#{out}.min.js compiled and minified."
