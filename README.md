@@ -99,7 +99,7 @@ SuperSweetAlert lets you embed another page within your alert. This can be usefu
 #### Get values
 
 You can not only specify a handler but also an iframehandler. The iframehandler has an attribute 'iframe' which passes the contents of the iframe, as they were when the button was pressed, as HTMLDocument. So you can get all elements of the iframe and their contents with normal JavaScript.
-If you define both **the handler will be called** ***after*** **the iframehandler**. Note that you can only access the iframe from within the iframehandler.
+If you define both the handler will be called **after** the iframehandler. **You need to** `return true` **in order to execute the handler and/or close the alert!** Note that you can only access the iframe from within the iframehandler.
 **If you want to show other alerts do that from within the** ***normal handler***. Showing other alerts won't be possible from within the iframehandler.
 
 Example:
@@ -119,6 +119,7 @@ ssal({
             iframehandler: function(doc) {
                 // work with the iframe's document (doc)
                 alert('first the iframehandler');
+                return true;
             },
             handler: function() {
                 alert('then the handler');
@@ -153,6 +154,7 @@ ssal
             iframehandler: (doc) ->
                 x = doc.getElementById 'x'
                 alert 'x'
+                return true
         }
         'section'
         {

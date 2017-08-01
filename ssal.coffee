@@ -155,16 +155,19 @@ createButtons = (buttons) ->
                     button.addEventListener 'click', (event) ->
                         ifr = document.getElementById 'swal2-iframe'
                         innerDoc = ifr.contentDocument or ifr.contentWindow.document
-                        window.iframehandler innerDoc
 
-                        element = event.srcElement
-                        window.handlerID = element.getAttribute 'id'
-                        sweetAlert.close()
+                        if window.iframehandler(innerDoc) is true
+                            element = event.srcElement
+                            window.handlerID = element.getAttribute 'id'
+                            sweetAlert.close()
+
+                        return
                 else
                     button.addEventListener 'click', (event) ->
                         element = event.srcElement
                         window.handlerID = element.getAttribute 'id'
                         sweetAlert.close()
+                        return
             else
                 # if button is cancel, only close
                 button.addEventListener 'click', ->
