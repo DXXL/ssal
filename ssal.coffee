@@ -8,9 +8,7 @@
 window.ssal = (params) ->
 
     # remove existing handlers to prepare for current alert
-    window.iframe = null
     window.iframehandler = null
-    window.iframehandlerID = null
     window.handlers = {}
     window.handlerID = null
 
@@ -157,11 +155,10 @@ createButtons = (buttons) ->
                     button.addEventListener 'click', (event) ->
                         ifr = document.getElementById 'swal2-iframe'
                         innerDoc = ifr.contentDocument or ifr.contentWindow.document
-                        window.iframe = innerDoc
+                        window.iframehandler innerDoc
 
                         element = event.srcElement
                         window.handlerID = element.getAttribute 'id'
-                        window.iframehandlerID = element.getAttribute 'iframeid'
                         sweetAlert.close()
                 else
                     button.addEventListener 'click', (event) ->
@@ -193,9 +190,7 @@ removeOccurenciesOfElementWithClass = (elCl) ->
     return
 
 # store iframe conten globally
-window.iframe = null
 window.iframehandler = null
-window.iframehandlerID = null
 
 # store handlers globally
 window.handlers = {}
@@ -204,10 +199,6 @@ window.handlerID = null
 # perform handler once the alert was closed
 mut = new MutationObserver((mutations, mut) ->
     if not document.body.classList.contains 'swal2-shown' and handlers.length > 0
-
-        # perform iframe handler if exists
-        if window.iframehandlerID == window.handlerID and window.iframe? and window.iframehandler?
-            iframehandler window.iframe
 
         # perform given handler if exists
         handler = window.handlers[window.handlerID]
