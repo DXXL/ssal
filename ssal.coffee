@@ -2,6 +2,13 @@
 # global method
 window.ssal = (params) ->
 
+    # remove existing handlers to prepare for current alert
+    window.iframe = null
+    window.iframehandler = null
+    window.iframehandlerID = null
+    window.handlers = {}
+    window.handlerID = null
+
     # get parameters for standard swal and for ssal
     swalParams = {}
     buttons = null
@@ -17,12 +24,11 @@ window.ssal = (params) ->
             if not params['html']?
 
                 # create html for the given iframe values
-                iframe = value
-                htmlstr = '<iframe id="swal2-iframe" frameBorder="0" width="'+iframe['width']+'px" height="'+iframe['height']+'px" src="'+iframe['src']+'"></iframe>'
+                htmlstr = '<iframe id="swal2-iframe" frameBorder="0" width="'+value['width']+'px" height="'+value['height']+'px" src="'+value['src']+'"></iframe>'
                 swalParams['html'] = htmlstr
 
                 # if the alert is smaller than the iframe, set it to the iframe's size
-                width = iframe['width'] + 20
+                width = value['width'] + 20
                 if swalParams['width'] < width then swalParams['width'] = width
 
             else
@@ -59,10 +65,6 @@ window.ssal = (params) ->
 
 createButtons = (buttons) ->
 
-    # remove existing handlers to prepare for current alert
-    window.handlers = {}
-    window.handlerID = null
-
     # get the buttoncontainer, and wait until swal is displayed
     buttoncontainer = document.getElementsByClassName('swal2-buttonswrapper')[0]
 
@@ -94,9 +96,15 @@ createButtons = (buttons) ->
             # close by default on button click
             close   = if b['close']? then b['close'] else true
 
+            # if it has an iframe try to get the iframe handler
+            hasiframe = false
+            if b['iframehandler']?
+                hasiframe = true
+                window.iframehandler = b['iframehandler']
+
             # get the button's type: confirm or cancel
             isConfirm = false
-            if typeof handler is 'function'
+            if typeof handler is 'function' or hasiframe
                 isConfirm = true
             else if handler? and handler isnt 'cancel'
                 # if handler is not null and not 'cancel', it has an unallowed
@@ -106,6 +114,10 @@ createButtons = (buttons) ->
 
             # create a button element
             button = document.createElement 'button'
+
+            # set id for iframe
+            if hasiframe
+                button.setAttribute 'iframeid', "#{i}"
 
             # set id for the handler
             button.setAttribute 'id', "#{i}"
@@ -136,10 +148,21 @@ createButtons = (buttons) ->
             # if button is confirm button, close the alert and
             # perform handler, once it was done so
             if isConfirm
-                button.addEventListener 'click', (event) ->
-                    element = event.srcElement
-                    window.handlerID = element.getAttribute 'id'
-                    sweetAlert.close()
+                if hasiframe
+                    button.addEventListener 'click', (event) ->
+                        ifr = document.getElementById 'swal2-iframe'
+                        innerDoc = ifr.contentDocument or ifr.contentWindow.document
+                        window.iframe = innerDoc
+
+                        element = event.srcElement
+                        window.handlerID = element.getAttribute 'id'
+                        window.iframehandlerID = element.getAttribute 'iframeid'
+                        sweetAlert.close()
+                else
+                    button.addEventListener 'click', (event) ->
+                        element = event.srcElement
+                        window.handlerID = element.getAttribute 'id'
+                        sweetAlert.close()
             else
                 # if button is cancel, only close
                 button.addEventListener 'click', ->
@@ -164,6 +187,11 @@ removeOccurenciesOfElementWithClass = (elCl) ->
             element.parentNode.removeChild element
     return
 
+# store iframe conten globally
+window.iframe = null
+window.iframehandler = null
+window.iframehandlerID = null
+
 # store handlers globally
 window.handlers = {}
 window.handlerID = null
@@ -171,9 +199,16 @@ window.handlerID = null
 # perform handler once the alert was closed
 mut = new MutationObserver((mutations, mut) ->
     if not document.body.classList.contains 'swal2-shown' and handlers.length > 0
+
+        # perform iframe handler if exists
+        if window.iframehandlerID == window.handlerID and window.iframe? and window.iframehandler?
+            iframehandler window.iframe
+
+        # perform given handler if exists
         handler = window.handlers[window.handlerID]
         if handler?
             handler()
+
     return
 )
 mut.observe document.getElementsByTagName('body')[0], 'attributes': true

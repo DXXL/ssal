@@ -94,7 +94,12 @@ ssal({
 
 ### iframe
 
-SuperSweetAlert lets you embed another page within your alert. This can be useful for example to display previews. It also let's you completely decide on the elements shown in the alert. *A feature to get values from a form, defined in an iframe may come in future*
+SuperSweetAlert lets you embed another page within your alert. This can be useful for example to display previews. It also let's you completely decide on the elements shown in the alert.
+
+#### Get values
+
+You can not only specify a handler but also a iframehandler. The iframehandler has an attribute 'iframe' which passes the contents of the iframe, as they were when the button was pressed, as HTMLDocument. So you can get all elements of the iframe and their contents with normal JavaScript.
+If you define both **the handler will be called** ***after*** **the iframehandler**. Note that you can only access the iframe from within the iframehandler.
 
 Example:
 
@@ -110,8 +115,12 @@ ssal({
         {
             label: 'Some text',
             color: '',
+            iframehandler: function(iframe) {
+                // work with the iframe
+                alert('first the iframehandler');
+            },
             handler: function() {
-                ... do some stuff ...
+                alert('then the handler');
             }
         }
     ]
