@@ -1,13 +1,13 @@
 # Inspired by http://productive.me/blog/cakefile-to-combinecompile-and-minify-sets-of-coffeescript-files
 
-cake = {
-    'ssal': ['ssal']
-}
+input = ['ssal']
 
 fs = require 'fs'
 {exec} = require 'child_process'
 
-task 'build', 'Build single application file from source files', ->
+option '-o', '--output [PATH]', 'Output path'
+option '-n', '--name [PATH]', 'Output file name'
+task 'build', 'Build single application file from source files', (options) ->
     compile = (out, appFiles) ->
         appContents = new Array remaining = appFiles.length
         for file, index in appFiles then do (file, index) ->
@@ -31,5 +31,5 @@ task 'build', 'Build single application file from source files', ->
                     throw err if err
                     console.log "#{out}.min.js compiled and minified."
 
-    for out, appFiles of cake
-        compile out, appFiles
+    output = options['output'] + '/' + options['name']
+    compile output, input

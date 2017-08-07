@@ -200,7 +200,7 @@ window.handlers = {}
 window.handlerID = null
 
 # perform handler once the alert was closed
-mut = new MutationObserver((mutations, mut) ->
+window.mut = new MutationObserver((mutations, mut) ->
     if not document.body.classList.contains 'swal2-shown' and handlers.length > 0
 
         # perform given handler if exists
@@ -210,4 +210,8 @@ mut = new MutationObserver((mutations, mut) ->
 
     return
 )
-mut.observe document.getElementsByTagName('body')[0], 'attributes': true
+
+# execute once the page loaded
+document.addEventListener 'DOMContentLoaded', (->
+    window.mut.observe document.body, 'attributes': true
+), false
